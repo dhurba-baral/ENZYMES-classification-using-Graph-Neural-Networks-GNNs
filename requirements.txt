@@ -1,0 +1,6 @@
+torch_geometric
+numpy
+pandas
+torch
+sklearn
+matplotlib
