@@ -1,31 +1,19 @@
 import torch
-from models import GCN_1Layer, GCN_2Layer, GAT_Model
-from evaluate import evaluate
-from data_loaders import num_features, num_classes
-from train_model import HIDDEN_DIM, criterion
+from test_functions import test_model
+from data_loaders import test_loader, num_classes
+from plot_functions import plot_roc_curves
 
-#test the trained model
-def test_model(model_path, test_loader, device, model_type):
-    # Initialize model
-    if model_type == 'GCN1':
-        model = GCN_1Layer(num_features=num_features, hidden_channels=HIDDEN_DIM, num_classes=num_classes)
-    elif model_type == 'GCN2':
-        model = GCN_2Layer(num_features=num_features, hidden_channels=HIDDEN_DIM, num_classes=num_classes)
-    elif model_type == 'GAT':
-        model = GAT_Model(num_features=num_features, hidden_channels=HIDDEN_DIM, num_classes=num_classes)
-    else:
-        raise ValueError(f"Unknown model type: {model_type}")
+# Set device
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    # Load model weights
-    model.load_state_dict(torch.load(model_path, map_location=device))
-    model = model.to(device)
+# test GCN 1-Layer model and plot ROC curves
+accuracy, f1, auc, labels, probs = test_model(model_path='models/best_GCN1_model.pth', test_loader=test_loader, device=device, model_type='GCN1')
+plot_roc_curves(num_classes=num_classes, model_name='GCN1', labels=labels, probs=probs)
 
-    # Evaluate
-    accuracy, f1, auc, val_loss, labels, probs = evaluate(model=model, loader=test_loader, device=device, criterion=criterion)
+# # test GCN 2-Layer model and plot ROC curves
+# accuracy, f1, auc, labels, probs = test_model(model_path='models/best_GCN2_model.pth', test_loader=test_loader, device=device, model_type='GCN2')
+# plot_roc_curves(num_classes=num_classes, model_name='GCN2', labels=labels, probs=probs)
 
-    print(f"\nTest Results for {model_type}:")
-    print(f"Accuracy: {accuracy:.4f}")
-    print(f"F1 Score: {f1:.4f}")
-    print(f"AUC: {auc:.4f}")
-
-    return accuracy, f1, auc, labels, probs
+# # test GAT model and plot ROC curves
+# accuracy, f1, auc, labels, probs = test_model(model_path='models/best_GAT_model.pth', test_loader=test_loader, device=device, model_type='GAT')
+# plot_roc_curves(num_classes=num_classes, model_name='GAT', labels=labels, probs=probs)

@@ -11,7 +11,7 @@ np.random.seed(42)
 BATCH_SIZE = 32
 
 #initialize dataset
-DATA_ROOT = '/data'
+DATA_ROOT = 'data'
 dataset = ENZYMESDataset(root=DATA_ROOT)
 
 num_samples = len(dataset)
