@@ -6,7 +6,6 @@ from train_functions import train_model
 from data_loaders import BATCH_SIZE
 from data_loaders import train_loader, val_loader, num_features, num_classes
 
-
 #reproducibility
 torch.manual_seed(42)
 
